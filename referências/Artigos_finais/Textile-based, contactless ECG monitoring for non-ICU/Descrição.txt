@@ -1,0 +1,1 @@
+Este artigo trata das diferentes situações de uso de sensores capacitivos não invasivos para detecção de ECG. Usou-se, para o TCC, a ideia de usar sensoreres conectados no colchão do paciente em casa ou no hospital

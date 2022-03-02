@@ -1,0 +1,1 @@
+Esse artigo trata do monitoramento em tempo real de ECG mostrando as informaçoes em um site. Aleém do ECG ele também mede temperatura, pulso. 
