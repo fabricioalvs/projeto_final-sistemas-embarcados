@@ -2,12 +2,61 @@
 import serial
 import string
 import time
+import requests
+import math
+import random
+import threading
+
+TOKEN = "BBFF-L48Awxo7p33L5GSmURXCcaqt3Cl5Bl"  # Put your TOKEN here
+DEVICE_LABEL = "ECG_signal_monitoring_raspberry"  # Put your device label here
+VARIABLE_LABEL_1 = "ecg_sensor_data"  # Put your first variable label here
+#VARIABLE_LABEL_2 = "humidity"  # Put your second variable label here
+#VARIABLE_LABEL_3 = "position"  # Put your second variable label here
+#global payload
+def receive_data(variable_1):
+    #abertura da porta serial
+    ser = serial.Serial('/dev/ttyS0', 115200, timeout=0)
+    ser.reset_input_buffer()
+    while True:
+            serialdata=ser.read()
+            serialdata= int.from_bytes(serialdata,"little",signed=True)*(-1)
+            payload= {variable_1: serialdata}
+            post_request(payload)
+            #lendo dados da porta serial e printando na tela
+    #return payload
+
+def post_request(payload):
+    # Creates the headers for the HTTP requests
+    url = "http://industrial.api.ubidots.com"
+    url = "{}/api/v1.6/devices/{}".format(url, DEVICE_LABEL)
+    headers = {"X-Auth-Token": TOKEN, "Content-Type": "application/json"}
+
+    # Makes the HTTP requests
+    status = 400
+    attempts = 0
+    while status >= 400 and attempts <= 5:
+        req = requests.post(url=url, headers=headers, json=payload)
+        status = req.status_code
+        attempts += 1
+        #time.sleep(0.001)
+
+    # Processes results
+    print(req.status_code, req.json())
+    if status >= 400:
+        print("[ERROR] Could not send data after 5 attempts, please check \
+            your token credentials and internet connection")
+        return False
+
+    print("[INFO] request made properly, your device is updated")
+    return True
+#def main():
+    #payload = receive_data(VARIABLE_LABEL_1)
+    #post_request(payload)
+
 if __name__ == '__main__':
-        #abertura da porta serial
-        ser = serial.Serial('/dev/ttyS0', 9600, timeout=0)
-        ser.reset_input_buffer()
-        while True:
-                serialdata=ser.read()
-                serialdata= int.from_bytes(serialdata,"little",signed=True)
-                print(serialdata)
-        #lendo dados da porta serial e printando na tela
+    #while (True):
+    #a = threading.Thread(target=post_request,name='Thread-a',daemon=True)
+    payload = receive_data(VARIABLE_LABEL_1)
+    #b = threading.Thread(target=main,name='Thread-b')
+    #a.start()
+    #b.start()
