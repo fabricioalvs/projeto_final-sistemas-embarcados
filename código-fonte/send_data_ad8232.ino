@@ -1,5 +1,5 @@
 void setup() {
-   Serial.begin(9600);
+   Serial.begin(115200);
    pinMode(3, INPUT); // Configuração para detecção de derivações LO +
    pinMode(2, INPUT); // Configuração para detecção de leads off LO -
 }
