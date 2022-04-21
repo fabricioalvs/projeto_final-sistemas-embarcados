@@ -5,12 +5,11 @@ import time
 import requests
 import math
 import sys
+
 TOKEN = "BBFF-L48Awxo7p33L5GSmURXCcaqt3Cl5Bl"  # Put your TOKEN here
 DEVICE_LABEL = "ECG_signal_monitoring_raspberry"  # Put your device label here
 VARIABLE_LABEL_1 = "ecg_sensor_data"  # Put your first variable label here
-#VARIABLE_LABEL_2 = "humidity"  # Put your second variable label here
-#VARIABLE_LABEL_3 = "position"  # Put your second variable label here
-#global payload
+
 def receive_data(variable_1):
     #abertura da porta serial
     ser = serial.Serial('/dev/ttyS0', 115200, timeout=0.1)
