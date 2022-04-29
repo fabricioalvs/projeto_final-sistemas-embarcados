@@ -4,7 +4,6 @@ import string
 import time
 import requests
 import math
-import sys
 
 TOKEN = "BBFF-L48Awxo7p33L5GSmURXCcaqt3Cl5Bl"  # Put your TOKEN here
 DEVICE_LABEL = "ECG_signal_monitoring_raspberry"  # Put your device label here
@@ -18,8 +17,6 @@ def receive_data(variable_1):
         print("connected!")
         while True:
             serialdata=ser.readline().decode('utf-8').rstrip()
-            if serialdata == '!':
-                serialdata=0
             serialdata=int(serialdata)
             #serialdata=int.from_bytes(serialdata,"little",signed=True)
             payload= {variable_1: serialdata}
