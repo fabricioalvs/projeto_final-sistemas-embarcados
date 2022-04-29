@@ -59,7 +59,6 @@ int main(void)
                          printf("NO DATA");//No data waiting
                 }
 		num = strtol(rx_buffer, NULL, 10); //Transformando para número inteiro de base 10
-                printf("%d\n",num);
 		snprintf(comandoCompleto, 100, "python rasp_to_ubidots.py %d", num); // concatena a frase recebida com o comando para executar o arquivo python
                 system(comandoCompleto);
 	}
