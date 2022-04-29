@@ -61,5 +61,6 @@ int main(void)
 		num = strtol(rx_buffer, NULL, 10); //Transformando para número inteiro de base 10
 		snprintf(comandoCompleto, 100, "python rasp_to_ubidots.py %d", num); // concatena a frase recebida com o comando para executar o arquivo python
                 system(comandoCompleto);
+		memset(rx_buffer,0,6);
 	}
 }
