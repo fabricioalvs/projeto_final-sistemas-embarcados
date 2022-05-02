@@ -76,7 +76,7 @@ int main(void)
 		result =fputs(rx_buffer,arq);
                 if (result == EOF)
                 {
-                      printf("ERRO NA GRAVAÇÃO\n");
+                      printf("ERROR RECORDING\n");
                 }
 		num = strtol(rx_buffer, NULL, 10); //Transformando para número inteiro de base 10
            	if (num > 100)
