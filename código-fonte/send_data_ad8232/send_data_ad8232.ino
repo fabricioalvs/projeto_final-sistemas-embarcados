@@ -13,5 +13,5 @@ void loop() {
     Serial.println(analogRead(A0));
   }
   // Espere um pouco para evitar que os dados seriais saturem
-  delay(1);
+  delay(2);
 }
