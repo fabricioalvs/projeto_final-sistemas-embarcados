@@ -45,10 +45,25 @@ int main(void)
         tcflush(uart0_fd, TCIOFLUSH);
         tcsetattr(uart0_fd, TCSANOW, &options);
         unsigned char rx_buffer[6];
+ 	tcsetattr(uart0_fd, TCSANOW, &options);
+        FILE *arq;
+        arq=fopen("dados_ecg.xlsx", "wt");
+        if(arq == NULL)
+        {
+                printf("ERRO NA ABERTURA DE ARQUIVO\n");
+                return -1;
+        }
+	int cont_pico_R=0;
+        int tempo = 0;
+        double batimentos_card;
+        int result;
+        int rx_length;
         while(1)
         {
                 int rx_length = read(uart0_fd, (void*)rx_buffer, 5);
-		usleep(10000);
+		usleep(2000);
+                cont_pico_R++;
+                tempo++;
                 if (rx_length < 0)
                 {
                         disconnect_uart();
@@ -58,9 +73,25 @@ int main(void)
                 {
                          printf("NO DATA");//No data waiting
                 }
+		result =fputs(rx_buffer,arq);
+                if (result == EOF)
+                {
+                      printf("ERRO NA GRAVAÇÃO\n");
+                }
 		num = strtol(rx_buffer, NULL, 10); //Transformando para número inteiro de base 10
-		snprintf(comandoCompleto, 100, "python rasp_to_ubidots.py %d", num); // concatena a frase recebida com o comando para executar o arquivo python
-                system(comandoCompleto);
+           	if (num > 100)
+                {
+                        printf("%d\n",cont_pico_R);
+                        batimentos_card=60/(cont_pico_R*0.002);
+                        printf("%.f\n",batimentos_card);
+                        snprintf(comandoCompleto, 100, "python3 rasp_to_ubidots.py %.f", batimentos_card); // concatena>                        system(comandoCompleto);
+                        cont_pico_R=0;
+                }
 		memset(rx_buffer,0,6);
+		if (tempo == 15000){
+                        fclose(arq);
+                        close(uart0_fd);
+                        exit(-1);
+                }
 	}
 }
