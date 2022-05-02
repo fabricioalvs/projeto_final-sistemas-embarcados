@@ -58,6 +58,8 @@ int main(void)
         double batimentos_card;
         int result;
         int rx_length;
+	int vetor_bc,j,i=0;
+        double media=0.0, 
         while(1)
         {
                 int rx_length = read(uart0_fd, (void*)rx_buffer, 5);
@@ -79,13 +81,39 @@ int main(void)
                       printf("ERROR RECORDING\n");
                 }
 		num = strtol(rx_buffer, NULL, 10); //Transformando para número inteiro de base 10
-           	if (num > 100)
+           	 if (num >= 100)
                 {
-                        printf("%d\n",cont_pico_R);
+                        //printf("%d\n",cont_pico_R);
                         batimentos_card=60/(cont_pico_R*0.002);
-                        printf("%.f\n",batimentos_card);
-                        snprintf(comandoCompleto, 100, "python3 rasp_to_ubidots.py %.f", batimentos_card); // concatena>                        system(comandoCompleto);
+                        if (batimentos_card>=40 & batimentos_card<=130){
+                                i++;
+                                if(i==2){
+                                        vetor_bc=batimentos_card;
+                                        media =(double)vetor_bc;
+                                        printf("%.f\n",media);
+					snprintf(comandoCompleto, 100, "python3 rasp_to_ubidots.py %.f", batimentos_card); // concatena a frase >
+                                        system(comandoCompleto);
+                                }
+                                if(i>2){
+                                        vetor_bc+=batimentos_card;
+                                        media=(media+vetor_bc)/i;
+                                        snprintf(comandoCompleto, 100, "python3 rasp_to_ubidots.py %.f", batimentos_card); // concatena a frase >
+                                        system(comandoCompleto);
+                                }
+                        }
                         cont_pico_R=0;
+                }
+                else
+                {
+                        
+			if (i>=2){	
+				for(j=1;j<=300;j++){
+                                	if(cont_pico_R==100*j){
+						snprintf(comandoCompleto, 100, "python3 rasp_to_ubidots.py %.f", batimentos_card); // concatena a frase >
+                                        	system(comandoCompleto);
+                                	}
+                        	}
+			}
                 }
 		memset(rx_buffer,0,6);
 		if (tempo == 15000){
